@@ -117,7 +117,7 @@ setuptools.setup(
     version="0.0.1",
     description="Example pipelines using Apache Beam.",
     install_requires=REQUIRED_PACKAGES,
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages("src"),
     cmdclass={
         # Command class instantiated and run during pip install scenarios.
         "build": build,
