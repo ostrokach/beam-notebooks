@@ -1,5 +1,5 @@
 {
     "python.formatting.provider": "black",
-    "python.pythonPath": "/home/strokach/miniconda3/envs/beam-dev/bin/python",
+    "python.pythonPath": "/usr/local/google/home/strokach/miniconda3/bin/python",
     "python.formatting.blackPath": "/home/strokach/miniconda3/bin/black"
 }
