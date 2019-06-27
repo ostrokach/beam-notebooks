@@ -1,5 +1,7 @@
 #!/bin/bash
 
-conda install --file spec-file.txt
+conda info --envs
 
+conda activate -n beam-notebook-demo
+conda install --file spec-file.txt
 pip install "git+https://github.com/ostrokach/beam.git@feature/filebasedcache#egg=apache_beam[gcp]&subdirectory=sdks/python"

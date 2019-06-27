@@ -1,3 +1,5 @@
+name:
+- beam-notebook-demo
 channels:
 - conda-forge
 dependencies:
