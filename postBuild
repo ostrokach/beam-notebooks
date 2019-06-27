@@ -2,6 +2,5 @@
 
 conda info --envs
 
-conda activate -n beam-notebook-demo
-conda install --file spec-file.txt
-pip install "git+https://github.com/ostrokach/beam.git@feature/filebasedcache#egg=apache_beam[gcp]&subdirectory=sdks/python"
+conda install -p /srv/conda/envs/kernel --file spec-file.txt
+/srv/conda/envs/bin/python -m pip install "git+https://github.com/ostrokach/beam.git@feature/filebasedcache#egg=apache_beam[gcp]&subdirectory=sdks/python"
