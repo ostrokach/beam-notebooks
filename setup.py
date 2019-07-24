@@ -40,7 +40,6 @@ class build(_build):  # pylint: disable=invalid-name
   instantiated during install for this specific scenario and will trigger
   running the custom commands specified.
   """
-
     sub_commands = _build.sub_commands + [("CustomCommands", None)]
 
 
@@ -109,7 +108,15 @@ class CustomCommands(setuptools.Command):
 # Note that the Python Dataflow containers come with numpy already installed
 # so this dependency will not trigger anything to be installed unless a version
 # restriction is specified.
-REQUIRED_PACKAGES = ["numpy", "pandas", "pyarrow", "matplotlib", "pyproj"]
+REQUIRED_PACKAGES = [
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "matplotlib",
+    'python-dateutil>=2.7.5,<2.8.0',
+    'pytz==2019.1',
+    "arrow>=0.14.2,<0.15.0"
+]
 
 
 setuptools.setup(
@@ -117,10 +124,13 @@ setuptools.setup(
     version="0.0.1",
     description="Example pipelines using Apache Beam.",
     install_requires=REQUIRED_PACKAGES,
-    packages=setuptools.find_packages("src"),
+    packages=setuptools.find_packages(include="src"),
     cmdclass={
         # Command class instantiated and run during pip install scenarios.
         "build": build,
         "CustomCommands": CustomCommands,
     },
+    author="Alexey Strokach",
+    author_email="alex.strokach@utoronto.ca",
+    url="https://github.com/ostrokach/beam-notebooks",
 )

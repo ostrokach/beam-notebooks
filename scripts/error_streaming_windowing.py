@@ -1,9 +1,10 @@
-from __future__ import print_function
+from __future__ import division, print_function
 
 import contextlib
 import gc
 import json
 import logging
+import math
 import os
 import pickle
 import sys
@@ -11,6 +12,7 @@ import tempfile
 import time
 import uuid
 import weakref
+from datetime import datetime
 
 import apache_beam as beam
 from apache_beam.io.filesystems import FileSystems
@@ -18,7 +20,15 @@ from apache_beam.io.gcp.pubsub import PubsubMessage
 from apache_beam.options.pipeline_options import GoogleCloudOptions, PipelineOptions
 from apache_beam.transforms import combiners, window
 from apache_beam.utils import timestamp
+from google.api_core import exceptions as gexc
 from google.cloud import pubsub_v1
+
+from pubsub_helpers import (
+    create_pubsub_topic,
+    create_pubsub_subscription,
+    write_to_pubsub,
+    read_from_pubsub,
+)
 
 try:
     from contextlib import ExitStack
@@ -38,8 +48,10 @@ options = PipelineOptions(
 
 @contextlib.contextmanager
 def create_pubsub_topic(project_id, prefix):
-    topic_path = "projects/{}/topics/{}-{}".format(project_id, prefix, uuid.uuid4().hex)
     pub_client = pubsub_v1.PublisherClient()
+    topic_path = pub_client.topic_path(
+        project_id, "{}-{}".format(prefix, uuid.uuid4().hex)
+    )
     pub_client.create_topic(topic_path)
     try:
         yield topic_path
@@ -49,10 +61,9 @@ def create_pubsub_topic(project_id, prefix):
 
 @contextlib.contextmanager
 def create_pubsub_subscription(topic_path, suffix=""):
-    subscription_path = topic_path.replace("/topics/", "/subscriptions/")
-    if suffix:
-        subscription_path += "-{}".format(suffix)
-    sub_client = pubsub_v1.SubscriberClient()
+    subscription_path = topic_path.replace("/topics/", "/subscriptions/") + (
+        "-{}".format(suffix) if suffix else ""
+    )
     sub_client.create_subscription(subscription_path, topic_path)
     try:
         yield subscription_path
@@ -60,18 +71,36 @@ def create_pubsub_subscription(topic_path, suffix=""):
         sub_client.delete_subscription(subscription_path)
 
 
-def write_to_pubsub(data_list, topic_path):
+def write_to_pubsub(data_list, topic_path, attributes_fn=None, chunk_size=100):
     pub_client = pubsub_v1.PublisherClient()
-    futures = [pub_client.publish(topic_path, data) for data in data_list]
-    for future in futures:
-        future.result()
+    for start in range(0, len(data_list), chunk_size):
+        data_chunk = data_list[start : start + chunk_size]
+        if attributes_fn:
+            attributes_chunk = [attributes_fn(data) for data in data_chunk]
+        else:
+            attributes_chunk = [{} for _ in data_chunk]
+        futures = [
+            pub_client.publish(
+                topic_path, json.dumps(data).encode("utf-8"), **attributes
+            )
+            for data, attributes in zip(data_chunk, attributes_chunk)
+        ]
+        for future in futures:
+            future.result()
+        print("Finished publishing chunk of size {}.".format(len(data_chunk)))
+        time.sleep(0.1)
 
 
-def read_from_pubsub(subscription_path, number_of_elements=None):
+def read_from_pubsub(subscription_path, number_of_elements):
     sub_client = pubsub_v1.SubscriberClient()
     messages = []
     while len(messages) <= number_of_elements:
-        response = sub_client.pull(subscription_path, max_messages=number_of_elements)
+        try:
+            response = sub_client.pull(
+                subscription_path, max_messages=number_of_elements
+            )
+        except gexc.RetryError:
+            pass
         for msg in response.received_messages:
             sub_client.acknowledge(subscription_path, [msg.ack_id])
             data = json.loads(msg.message.data.decode("utf-8"))
@@ -87,12 +116,8 @@ def timestamp_element(element):
     from apache_beam.utils import timestamp
 
     return window.TimestampedValue(
-        element, timestamp.Timestamp(seconds=element["timestamp"])
+        element, timestamp.Timestamp(micros=element["timestamp"] * 1000)
     )
-
-
-def add_timestamp_from_first_element(element):
-    return {"timestamp": element[0]["timestamp"], "batch": element}
 
 
 def encode_to_pubsub_message(element):
@@ -102,6 +127,12 @@ def encode_to_pubsub_message(element):
     data = json.dumps(element).encode("utf-8")
     attributes = {"timestamp": str(element["timestamp"])}
     return PubsubMessage(data, attributes)
+
+
+class AddGroupTimestamp(beam.DoFn):
+    def process(self, element, window=beam.DoFn.WindowParam):
+        element = {"timestamp": int(window.end.micros // 1000), "batch": element}
+        yield element
 
 
 def run_pipeline(options):
@@ -119,23 +150,30 @@ def run_pipeline(options):
             create_pubsub_subscription(output_topic)
         )
 
-        write_to_pubsub(
-            [json.dumps({"timestamp": i}).encode("utf-8") for i in range(10000)],
-            input_topic,
-        )
+        unix_time = datetime.utcnow() - datetime.utcfromtimestamp(0)
+        rounded_time = int(math.ceil(unix_time.total_seconds() / 100) * 100)
+        # ReadFromPubSub expects timestamps to be in milliseconds
+        rounded_time_millis = rounded_time * 1000
+        print("Current time: {}".format(rounded_time_millis))
+        data = [{"timestamp": rounded_time_millis + i} for i in range(0, 100000, 10)]
+        write_to_pubsub(data, input_topic)
+
         p = beam.Pipeline(options=options)
         _ = (
             p
-            | beam.io.ReadFromPubSub(subscription=input_subscription)
+            | "Read"
+            >> beam.io.ReadFromPubSub(
+                subscription=input_subscription,
+                # with_attributes=["timestamp_milliseconds"],
+                # timestamp_attribute="timestamp_milliseconds",
+            )
             # | beam.Create(data)
-            | beam.Map(lambda e: json.loads(e.decode("utf-8")))
-            # | beam.Map(lambda e: print(e) or e)
-            | beam.Map(timestamp_element)
-            | beam.WindowInto(window.FixedWindows(100))
+            | "Decode" >> beam.Map(lambda e: json.loads(e.decode("utf-8")))
+            | "Add timestamp" >> beam.Map(timestamp_element)
+            | "Add windowing" >> beam.WindowInto(window.FixedWindows(1))
             | "Group into batches"
             >> beam.CombineGlobally(combiners.ToListCombineFn()).without_defaults()
-            | "Add a timestamp to each batch"
-            >> beam.Map(add_timestamp_from_first_element)
+            | "Add a timestamp to each batch" >> beam.ParDo(AddGroupTimestamp())
             | "Encode" >> beam.Map(encode_to_pubsub_message)
             | "Write" >> beam.io.WriteToPubSub(output_topic, with_attributes=True)
         )
@@ -148,10 +186,14 @@ def run_pipeline(options):
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--runner", choices=["DirectRunner", "DataflowRunner"])
+    args = parser.parse_args()
     # logging.basicConfig(level=logging.DEBUG)
     options = PipelineOptions(
-        runner="DirectRunner",
-        # runner="DataflowRunner",
+        runner=args.runner,
         project="strokach-playground",
         streaming=True,
         temp_location="gs://strokach/dataflow_temp",
