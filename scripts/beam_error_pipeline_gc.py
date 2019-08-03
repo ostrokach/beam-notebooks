@@ -16,13 +16,6 @@ from apache_beam.options.pipeline_options import GoogleCloudOptions
 from apache_beam.pipeline import PipelineOptions
 from google.cloud import pubsub_v1
 
-from pubsub_helpers import (
-    create_pubsub_subscription,
-    create_pubsub_topic,
-    read_from_pubsub,
-    write_to_pubsub,
-)
-
 try:
     from contextlib import ExitStack
 except ImportError:
