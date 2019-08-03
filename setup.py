@@ -113,7 +113,7 @@ REQUIRED_PACKAGES = [
     "pandas",
     "pyarrow",
     "matplotlib",
-    'python-dateutil>=2.7.5,<2.8.0',
+    'python-dateutil>=2.7.5,<3.0',
     'pytz==2019.1',
     "arrow>=0.14.2,<0.15.0"
 ]
