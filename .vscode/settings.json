@@ -1,5 +1,0 @@
-{
-    "python.formatting.provider": "black",
-    "python.pythonPath": "/usr/local/google/home/strokach/miniconda3/bin/python",
-    "python.formatting.blackPath": "/usr/local/google/home/strokach/miniconda3/bin/black"
-}
