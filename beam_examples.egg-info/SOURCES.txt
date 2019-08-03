@@ -1,7 +1,0 @@
-README.md
-setup.py
-beam_examples.egg-info/PKG-INFO
-beam_examples.egg-info/SOURCES.txt
-beam_examples.egg-info/dependency_links.txt
-beam_examples.egg-info/requires.txt
-beam_examples.egg-info/top_level.txt
