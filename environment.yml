@@ -24,6 +24,8 @@ dependencies:
   - chardet=3.0.4=py37_1003
   - contextlib2=0.5.5=py_2
   - cryptography=2.7=py37h72c5cf5_0
+  - cycler=0.10.0=py_1
+  - dbus=1.13.6=he372182_0
   - decorator=4.4.0=py_0
   - defusedxml=0.5.0=py_1
   - dill=0.3.0=py37_0
@@ -55,6 +57,8 @@ dependencies:
   - grpc-cpp=1.22.0=h18db393_0
   - grpc-google-iam-v1=0.11.4=py37_1
   - grpcio=1.16.1=py37hf8bcb03_1
+  - gst-plugins-base=1.14.5=h0935bb2_0
+  - gstreamer=1.14.5=h36ae1b5_0
   - harfbuzz=2.4.0=h9f30f68_2
   - httplib2=0.13.1=py37_0
   - icu=64.2=he1b5a44_0
@@ -69,6 +73,7 @@ dependencies:
   - jsonschema=3.0.2=py37_0
   - jupyter_client=5.3.1=py_0
   - jupyter_core=4.4.0=py_0
+  - kiwisolver=1.1.0=py37hc9558a2_0
   - krb5=1.16.3=h05b26f9_1001
   - libblas=3.8.0=11_openblas
   - libcblas=3.8.0=11_openblas
@@ -91,6 +96,8 @@ dependencies:
   - libxml2=2.9.9=hee79883_2
   - lz4-c=1.8.3=he1b5a44_1001
   - markupsafe=1.1.1=py37h14c3975_0
+  - matplotlib=3.1.1=py37_1
+  - matplotlib-base=3.1.1=py37he7580a8_1
   - maven=3.6.0=0
   - mistune=0.8.4=py37h14c3975_1000
   - mmh3=2.5.1=py37hf484d3e_0
@@ -134,6 +141,7 @@ dependencies:
   - pymongo=3.8.0=py37he1b5a44_0
   - pyopenssl=19.0.0=py37_0
   - pyparsing=2.4.2=py_0
+  - pyqt=5.9.2=py37hcca6a23_2
   - pyrsistent=0.15.4=py37h516909a_0
   - pysocks=1.7.0=py37_0
   - python=3.7.3=h33d41f4_1
@@ -144,6 +152,7 @@ dependencies:
   - pytz=2019.2=py_0
   - pyyaml=3.13=py37h14c3975_1001
   - pyzmq=18.0.2=py37h1768529_2
+  - qt=5.9.7=h0c104cb_3
   - re2=2019.08.01=he1b5a44_0
   - readline=8.0=hf8c457e_0
   - requests=2.22.0=py37_1
@@ -151,6 +160,7 @@ dependencies:
   - rsa=3.4.2=py_1
   - send2trash=1.5.0=py_0
   - setuptools=41.0.1=py37_0
+  - sip=4.19.8=py37hf484d3e_1000
   - six=1.12.0=py37_1000
   - snappy=1.1.7=he1b5a44_1002
   - sqlite=3.29.0=hcee41ef_0
