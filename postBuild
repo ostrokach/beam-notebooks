@@ -2,13 +2,19 @@
 
 set -ev
 
-apt-get update
-apt-get install -yq openjdk-9-jdk maven
-
 mkdir -p opt
+
 pushd opt
+
+wget https://download.java.net/openjdk/jdk9/ri/openjdk-9+181_linux-x64_ri.zip
+unzip openjdk-9+181_linux-x64_ri.zip
+
+wget https://www-eu.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz
+tar -xf apache-maven-3.6.1-bin.tar.gz
+
 wget https://www-us.apache.org/dist/kafka/2.3.0/kafka_2.11-2.3.0.tgz
 tar -xf kafka_2.11-2.3.0.tgz
 
 git clone https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator.git
+
 popd

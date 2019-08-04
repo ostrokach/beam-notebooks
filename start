@@ -1,0 +1,19 @@
+#!/bin/bash
+
+export PATH=/home/jovyan/opt/java-se-9-ri/jdk-9/bin:/home/jovyan/opt/apache-maven-3.6.1/bin:$PATH
+
+pushd opt
+
+./kafka_2.11-2.3.0/bin/zookeeper-server-start.sh ./kafka_2.11-2.3.0/config/zookeeper.properties > \
+    zookeeper.log &
+sleep 5
+
+./kafka_2.11-2.3.0/bin/kafka-server-start.sh ./kafka_2.11-2.3.0/config/server.properties > \
+    kafka.log &
+sleep 10
+
+java -jar kafka-pubsub-emulator-0.1.0.jar -c ./config.json -p ./pubsub.json > emulator.log
+
+popd
+
+export PUBSUB_EMULATOR_HOST=localhost:8080
