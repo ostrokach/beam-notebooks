@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -ev
+
+sudo apt-get update
+sudo apt-get install -yq openjdk-9-jdk maven
+
+mkdir -p opt
+pushd opt
+wget https://www-us.apache.org/dist/kafka/2.3.0/kafka_2.11-2.3.0.tgz
+tar -xf kafka_2.11-2.3.0.tgz
+popd
