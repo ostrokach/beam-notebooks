@@ -1,0 +1,3 @@
+*.ipynb filter=change-kernel
+*.ipynb filter=nbstripout
+*.ipynb diff=ipynb

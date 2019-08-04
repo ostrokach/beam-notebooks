@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: set-notebook-kernel
+        name: Set kernel name to Python 3
+        entry: >-
+          sed -i 's/^   "display_name": "Python \[conda env:.*/   "display_name": "Python 3",/; 
+          s/^   "name": "conda-env-.*/   "name": "python3"/'
+        language: system
+        files: \.ipynb$
