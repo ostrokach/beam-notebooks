@@ -188,3 +188,4 @@ dependencies:
     - google-apitools==0.5.30
     - google-cloud-pubsub==0.42.1
     - monotonic==1.5
+    - git+https://github.com/ostrokach/beam.git@develop#egg=apache_beam&subdirectory=sdks/python
