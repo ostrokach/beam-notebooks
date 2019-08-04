@@ -184,4 +184,7 @@ dependencies:
   - zstd=1.4.0=h3b9ef0a_0
   - pip:
     - crcmod==1.7
+    - fasteners==0.15
+    - google-apitools==0.5.30
     - google-cloud-pubsub==0.42.1
+    - monotonic==1.5
