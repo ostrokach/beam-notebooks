@@ -5,6 +5,6 @@ set -ev
 mkdir -p opt
 
 pushd opt
-wget https://www-us.apache.org/dist/kafka/2.3.0/kafka_2.11-2.3.0.tgz && tar -xf kafka_2.11-2.3.0.tgz
+wget --quiet https://www-us.apache.org/dist/kafka/2.3.0/kafka_2.11-2.3.0.tgz && tar -xf kafka_2.11-2.3.0.tgz
 git clone https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator.git
 popd
