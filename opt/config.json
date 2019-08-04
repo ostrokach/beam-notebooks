@@ -1,0 +1,18 @@
+{
+  "port": 8080,
+  "kafka": {
+    "bootstrapServers": [
+      "localhost:9092"
+    ],
+    "producerExecutors": 4,
+    "producerProperties": {
+      "linger.ms": "200",
+      "batch.size": "10000",
+      "buffer.memory": "32000000"
+    },
+    "consumerProperties": {
+      "max.poll.records": "1000"
+    },
+    "consumersPerSubscription": 4
+  }
+}
