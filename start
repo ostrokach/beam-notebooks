@@ -1,15 +1,9 @@
 #!/bin/bash
 
 pushd opt
-./kafka_2.11-2.3.0/bin/zookeeper-server-start.sh ./kafka_2.11-2.3.0/config/zookeeper.properties > \
-    zookeeper.log &
-sleep 5
-
-./kafka_2.11-2.3.0/bin/kafka-server-start.sh ./kafka_2.11-2.3.0/config/server.properties > \
-    kafka.log &
-sleep 10
-
-java -jar kafka-pubsub-emulator-0.1.0.jar -c ./config.json -p ./pubsub.json > emulator.log
+./kafka_2.11-2.3.0/bin/zookeeper-server-start.sh ./kafka_2.11-2.3.0/config/zookeeper.properties > zookeeper.log &
+(sleep 10 && ./kafka_2.11-2.3.0/bin/kafka-server-start.sh ./kafka_2.11-2.3.0/config/server.properties > kafka.log) &
+(sleep 20 && java -jar kafka-pubsub-emulator-0.1.0.jar -c ./config.json -p ./pubsub.json > emulator.log) &
 popd
 
 export PUBSUB_EMULATOR_HOST=localhost:8080
