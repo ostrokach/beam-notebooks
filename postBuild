@@ -1,6 +1,9 @@
 #!/bin/bash
 
+# Update jupyterlab version and install labextensions
+conda install -yq 'jupyterlab>=1.0'
 jupyter labextension install @jupyter-widgets/jupyterlab-manager 
+jupyter labextension install @jupyterlab/toc
 jupyter labextension install jupyterlab_bokeh
 
 set -ev
