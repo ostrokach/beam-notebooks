@@ -1,12 +1,14 @@
 #!/bin/bash
 
+set -ev
+
 # Update jupyterlab version and install labextensions
-conda install -yq 'jupyterlab>=1.0' rise
+conda install -yq 'jupyterlab>=1.0' jupyterlab_code_formatter black
 jupyter labextension install @jupyter-widgets/jupyterlab-manager 
 jupyter labextension install @jupyterlab/toc
 jupyter labextension install jupyterlab_bokeh
-
-set -ev
+jupyter labextension install @ryantam626/jupyterlab_code_formatter
+jupyter serverextension enable --py jupyterlab_code_formatter
 
 mkdir -p opt
 
@@ -14,5 +16,3 @@ pushd opt
 wget --quiet https://www-us.apache.org/dist/kafka/2.3.0/kafka_2.11-2.3.0.tgz && tar -xf kafka_2.11-2.3.0.tgz
 git clone https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator.git
 popd
-
-
