@@ -4,6 +4,7 @@ pushd opt
 ./flink-1.9.1/bin/start-cluster.sh
 ./kafka_2.11-2.3.1/bin/zookeeper-server-start.sh ./kafka_2.11-2.3.1/config/zookeeper.properties > zookeeper.log &
 (sleep 10 && ./kafka_2.11-2.3.1/bin/kafka-server-start.sh ./kafka_2.11-2.3.1/config/server.properties > kafka.log) &
+./ngrok http 8081 -log=stdout > ngrok.log
 popd
 
 exec "$@"
