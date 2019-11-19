@@ -14,5 +14,4 @@ mkdir -p opt
 
 pushd opt
 wget --quiet http://apache.forsale.plus/kafka/2.3.1/kafka_2.11-2.3.1.tgz && tar -xf kafka_2.11-2.3.1.tgz
-git clone https://github.com/GoogleCloudPlatform/kafka-pubsub-emulator.git
 popd
