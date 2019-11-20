@@ -4,10 +4,11 @@ set -ev
 
 # Update jupyterlab version and install labextensions
 conda install -yq 'jupyterlab>=1.0' jupyterlab_code_formatter black
-jupyter labextension install @jupyter-widgets/jupyterlab-manager 
-jupyter labextension install @jupyterlab/toc
-jupyter labextension install jupyterlab_bokeh
-jupyter labextension install @ryantam626/jupyterlab_code_formatter
+jupyter labextension install -y --no-build @jupyter-widgets/jupyterlab-manager
+jupyter labextension install -y --no-build @jupyterlab/toc
+jupyter labextension install -y --no-build jupyterlab_bokeh
+jupyter labextension install -y --no-build @ryantam626/jupyterlab_code_formatter
+jupyter lab build --minimize=False
 jupyter serverextension enable --py jupyterlab_code_formatter
 
 mkdir -p opt
