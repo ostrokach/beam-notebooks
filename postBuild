@@ -18,14 +18,14 @@ wget --quiet http://apache.forsale.plus/kafka/2.3.1/kafka_2.11-2.3.1.tgz && tar 
 wget --quiet https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && unzip ngrok-stable-linux-amd64.zip && rm ngrok-stable-linux-amd64.zip
 popd
 
-curl "https://codeload.github.com/apache/beam/zip/release-2.17.0" -o beam-release-2.17.0.zip
-unzip beam-release-2.17.0
+git clone https://github.com/apache/beam.git
+cd beam
+git checkout release-2.17.0
 
-pushd beam-release-2.17.0
 gradle "runners:flink:1.9:job-server:shadowJar" --info
 mkdir -p "/srv/conda/envs/notebook/lib/runners/flink/1.9/job-server/build/libs/"
 mv runners/flink/1.9/job-server/build/libs/*.jar "/srv/conda/envs/notebook/lib/runners/flink/1.9/job-server/build/libs/"
+
 pushd sdks/python
-python -m pip install . --no-deps --ignore-installed -vv
-popd
+python -m pip install -e .[gcp] -vv
 popd
