@@ -5,11 +5,8 @@ set -e
 conda remove -y -n beam-notebook --all || true
 
 conda create -y -n beam-notebook \
-    'python=3.7' 'openjdk=8' maven nodejs ipython \
-    apache-beam cython numpy pandas pyarrow scikit-learn fastavro \
-    matplotlib bokeh flask \
-    tqdm ipywidgets
-source activate beam-notebook
-pip install --no-deps 'six>=1.12'
-pip install "git+https://github.com/apache/beam.git@master#egg=apache_beam[gcp]&subdirectory=sdks/python"
-conda deactivate
+    'openjdk=8' maven 'gradle>=5.0,<6.0' nodejs \
+    'python=3.7' pip \
+    ipython flask 'six>=1.12' \
+    cython numpy pandas 'pyarrow>=0.15,<0.16' scikit-learn fastavro \
+    matplotlib pydot bokeh tqdm ipywidgets
