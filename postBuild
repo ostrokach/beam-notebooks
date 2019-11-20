@@ -27,5 +27,5 @@ mkdir -p "/srv/conda/envs/notebook/lib/runners/flink/1.9/job-server/build/libs/"
 mv runners/flink/1.9/job-server/build/libs/*.jar "/srv/conda/envs/notebook/lib/runners/flink/1.9/job-server/build/libs/"
 
 pushd sdks/python
-python -m pip install -e .[gcp] -vv
+python -m pip install -e .[gcp]
 popd
